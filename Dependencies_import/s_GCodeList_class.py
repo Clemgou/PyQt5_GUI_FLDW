@@ -39,12 +39,22 @@ class GCodeList(QFrame):
         self.setMidLineWidth(1)
         self.setMinimumWidth(400)
         self.setLayout( QVBoxLayout() )
-        # --- make refresh button --- #
-        self.addbutton = QPushButton("Add")
+        # --- make widgets --- #
+        self.addbutton        = QPushButton('Add')
+        self.choosedirectory  = QPushButton('Directory')
+        self.currentdirectory = QFileDialog()
+        self.directorylabel   = QLabel()
+        # --- make connection --- #
         self.addbutton.clicked.connect( self.addGcodeFile )
         self.addbutton.clicked.connect( self.refreshTextFileList )
+        self.choosedirectory.clicked.connect( self.chooseNewDirectory )
         # --- make layout --- #
         self.makeLayout()
+        # --- make default --- #
+        default_path = str( self.currentdirectory.directory().path() )
+        self.directorylabel.setText(default_path)
+        os.chdir(default_path)
+        self.refreshTextFileList() # we set all txt file as default #
 
     def doesIdExists(self, id_key):
         for id_ in self.id_list:
@@ -128,16 +138,21 @@ class GCodeList(QFrame):
             print("Error: dictionary and id_list not same size")
             return None
         N = len(self.id_list)
+        # --- set directory choice --- #
+        self.gridlayout.addWidget( self.choosedirectory, 0,0)
+        self.gridlayout.addWidget( self.directorylabel , 0,1 , 1,3)
+        # --- set add button --- #
         for i in range(N):
             id_item = self.id_list[i]
             gcode_item = self.gcode_list[id_item]
             # --- make list choice name file --- #
-            self.gridlayout.addWidget( gcode_item[-1], i,0 )
-            self.gridlayout.addWidget( gcode_item[1] , i,1 , 1,2)
-            self.gridlayout.addWidget( gcode_item[2] , i,3)
-        self.gridlayout.addWidget(self.addbutton, N+1,0 , 1,4)
+            self.gridlayout.addWidget( gcode_item[-1], i+1,0 )
+            self.gridlayout.addWidget( gcode_item[1] , i+1,1 , 1,2)
+            self.gridlayout.addWidget( gcode_item[2] , i+1,3)
+        # --- set add button --- #
+        self.gridlayout.addWidget(self.addbutton, (N+2),0 , 1,4)
         # --- avoid stretching of the gridlayout --- #
-        for i in range(N+1):
+        for i in range(N+2):
             self.gridlayout.setRowStretch(i, 1) # not completelly understood the effect of value higher than 0
 
     def refreshTextFileList(self):
@@ -154,6 +169,13 @@ class GCodeList(QFrame):
                 cb_objct.setCurrentIndex(0)
             else:
                 cb_objct.setCurrentIndex(ind_new)
+
+    def chooseNewDirectory(self):
+        new_path = self.currentdirectory.getExistingDirectory()
+        #new_path = str( self.currentdirectory.directory().path() )
+        os.chdir(new_path)
+        self.directorylabel.setText( new_path )
+        self.refreshTextFileList()
 
     def saveTextFile(self):
         filename = self.filename.text()

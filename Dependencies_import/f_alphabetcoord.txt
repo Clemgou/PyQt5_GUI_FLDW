@@ -1,7 +1,6 @@
 # This text file define the charactere and the list of point coordinate
 # in the pixel system. The sequance is ordered from left to right.
 #
-/# 8 0 stop 10 start 18 stop 4 start 12 stop 2 start 14
 ( 7 5 1 19
 ) 9 11 15 17
 [ 7 6 0 19
@@ -26,6 +25,7 @@ _ 0 16
 $ 1 19 17 15 14 22 20 4 5 7 9 11 stop 8 start 18
 & 14 15 17 19 1 2 26 8 7 5 4 16
 % 11 1 stop 25 dot stop 27 dot 27
+/# 8 0 stop 10 start 18 stop 4 start 12 stop 2 start 14
 0 0 6 10 16 0
 1 5 8 18 0 16
 2 6 10 13 3 0 16

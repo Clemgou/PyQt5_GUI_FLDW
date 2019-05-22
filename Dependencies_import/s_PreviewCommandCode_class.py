@@ -40,17 +40,28 @@ class PreviewCommandCode(QFrame):
         self.savebutton  = QPushButton("Save")
         self.rfrshbutton.clicked.connect( self.refreshTextFile )
         self.savebutton.clicked.connect( self.saveTextFile )
+        self.choosedirectory = QPushButton('Choose Directory')
         # --- make list choice name file --- #
-        self.filename       = QLineEdit()
-        self.filenamechoice = QComboBox()
+        self.currentdirectory = QFileDialog()
+        self.directorylabel   = QLabel()
+        self.filename         = QLineEdit()
+        self.filenamechoice   = QComboBox()
         self.filenamechoice.setLineEdit( self.filename )
         #self.filenamechoice.setAutoCompletion() #not working...
         #if self.defaultname != None: self.filenamechoice.addItem(self.defaultname) #'SWG_pygenerated.txt'
-        self.makeLocalFileList( self.filenamechoice ) # we set all txt file as default #
         self.filenamechoice.activated[str].connect(self.readSelectedFile)
         grid = QGridLayout()
-        grid.addWidget( QLabel('Name:') ,0, 0,1,1)
-        grid.addWidget( self.filenamechoice , 0,1,4,1)
+        grid.addWidget( self.choosedirectory, 0,0)
+        grid.addWidget( self.directorylabel , 0,1)
+        grid.addWidget( QLabel('Name:')     , 1,0, 1,1)
+        grid.addWidget( self.filenamechoice , 1,1, 1,4)
+        # --- make connection --- #
+        self.choosedirectory.clicked.connect( self.chooseNewDirectory )
+        # --- make default --- #
+        default_path = str( self.currentdirectory.directory().path() )
+        self.directorylabel.setText(default_path)
+        os.chdir(default_path)
+        self.makeLocalFileList( self.filenamechoice ) # we set all txt file as default #
         # --- editing window --- #
         self.textedit = QTextEdit(self)
         self.textedit.setMinimumWidth(400)
@@ -65,7 +76,14 @@ class PreviewCommandCode(QFrame):
         self.layout.addWidget(self.rfrshbutton)
         self.layout.addWidget(self.savebutton)
 
+    def cleanItemsComboBox(self, combobox):
+        N = combobox.count()
+        for i in reversed(range(N)):
+            combobox.removeItem(i)
+
     def makeLocalFileList(self, combobox):
+        # --- reset list --- #
+        self.cleanItemsComboBox(combobox)
         # --- retrieve all the file name in the present directory --- #
         local_filename = os.listdir()
         # --- selecting only .txt files --- #
@@ -79,6 +97,13 @@ class PreviewCommandCode(QFrame):
         combobox.addItem( 'Select a file' ) # to set initial value
         for i in range(len(txt_filename)):
             combobox.addItem( txt_filename[i] )
+
+    def chooseNewDirectory(self):
+        new_path = self.currentdirectory.getExistingDirectory()
+        #new_path = str( self.currentdirectory.directory().path() )
+        os.chdir(new_path)
+        self.directorylabel.setText( new_path )
+        self.makeLocalFileList( self.filenamechoice ) # we set all txt file as default #
 
     def refreshTextFile(self):
         filename = self.filename.text()
@@ -110,6 +135,7 @@ class PreviewCommandCode(QFrame):
 ################################################################################################
 
 if __name__=='__main__':
+    print('STARTING')
     appMain = QApplication(sys.argv)
     nametxtfile = "SWG_pygenerated.txt"
     Prev = PreviewCommandCode()
