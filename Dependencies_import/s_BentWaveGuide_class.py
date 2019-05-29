@@ -82,7 +82,7 @@ class BendWaveGuide(QWidget):
 
     def setCmdWriterParam(self):
         self.frameParamWindow.getParameters()   # set the dicvariable of the parameter window
-        self.framePrevVisual.setFilename( self.framePrevCmdCode.filename.text() )
+        self.framePrevVisual.setFilename( self.framePrevCmdCode.filename )
         self.commandwriter.setDicVariable(   self.frameParamWindow.dicvariable )
         self.commandwriter.initGroups()
         self.commandwriter.initLoopVariables() 

@@ -62,6 +62,7 @@ class DesignVisualisation(QFrame):
         self.drawallbutton = QPushButton('Draw All')
         # --- make labels --- #
         self.labellasercurrentpos = QLabel( str(self.laser.position) )
+        self.labellaserordigin    = QLabel( str(self.laser.origin))
         # --- make line edit --- #
         self.sampleboxXoffset = QLineEdit()
         self.sampleboxYoffset = QLineEdit()
@@ -107,8 +108,8 @@ class DesignVisualisation(QFrame):
         top_frame.setMaximumHeight( 150 )
         # ---  --- #
         hlayout_bottom = QHBoxLayout()
-        hlayout_bottom.addLayout( self.sliderslayout )
-        hlayout_bottom.addLayout( self.arrowsgrid )
+        hlayout_bottom.addWidget( self.sliderswidget )
+        hlayout_bottom.addWidget( self.arrowwidget )
         # ---  --- #
         bottom_frame = QFrame()
         bottom_frame.setLayout( hlayout_bottom )
@@ -255,18 +256,21 @@ class DesignVisualisation(QFrame):
         self.laserlayout = QGridLayout()
         self.laserlayout.addWidget( QLabel('LASER position:'), 0,0)
         self.laserlayout.addWidget( self.labellasercurrentpos, 0,1, 1,2)
-        self.laserlayout.addWidget( QLabel('LASER X0: '), 1,0)
-        self.laserlayout.addWidget( QLabel('LASER Y0: '), 2,0)
-        self.laserlayout.addWidget( QLabel('LASER Z0: '), 3,0)
-        self.laserlayout.addWidget( self.laserinitxpos, 1,1 )
-        self.laserlayout.addWidget( self.laserinitypos, 2,1 )
-        self.laserlayout.addWidget( self.laserinitzpos, 3,1 )
+        self.laserlayout.addWidget( QLabel('Stage origin  :'), 1,0)
+        self.laserlayout.addWidget( self.labellaserordigin   , 1,1, 1,2)
+        self.laserlayout.addWidget( QLabel('LASER X0: '), 2,0)
+        self.laserlayout.addWidget( QLabel('LASER Y0: '), 3,0)
+        self.laserlayout.addWidget( QLabel('LASER Z0: '), 4,0)
+        self.laserlayout.addWidget( self.laserinitxpos, 2,1 )
+        self.laserlayout.addWidget( self.laserinitypos, 3,1 )
+        self.laserlayout.addWidget( self.laserinitzpos, 4,1 )
         # --- make default --- #
         self.laserinitxpos.setText('0.0')
         self.laserinitypos.setText('2.0')
         self.laserinitzpos.setText('0.0')
 
     def makeMagnitudeSliders(self):
+        self.sliderswidget = QFrame()
         self.sliderslayout = QGridLayout()
         self.magnificationsliders = {}
         mgnf_layout = QVBoxLayout()
@@ -295,8 +299,12 @@ class DesignVisualisation(QFrame):
             updt_sllabel = partial( self.updateSliderLabel, label )
             slider.valueChanged.connect( updt_sllabel )
             slider.valueChanged.connect( self.updateMagnification )
+        # --- make arrow widget --- #
+        self.sliderswidget.setLayout( self.sliderslayout )
+        self.sliderswidget.setMaximumHeight( 80 )
 
     def makePositionArrows(self):
+        self.arrowwidget= QFrame()
         self.arrowsgrid = QGridLayout()
         self.uparrow    = QPushButton('+Y')
         self.downarrow  = QPushButton('-Y')
@@ -327,6 +335,10 @@ class DesignVisualisation(QFrame):
         self.rightarrow.clicked.connect( self.cameraGoPositiveX )
         self.positiveZ.clicked.connect( self.cameraGoPositiveZ )
         self.negativeZ.clicked.connect( self.cameraGoNegativeZ )
+        # --- make arrow widget --- #
+        self.arrowwidget.setLayout( self.arrowsgrid )
+        self.arrowwidget.setMaximumHeight( 150 )
+        self.arrowwidget.setMaximumWidth(  250 )
 
     def cameraGoNegativeY(self):
         X = np.array([0.,-1., 0.])
@@ -368,6 +380,7 @@ class DesignVisualisation(QFrame):
 
     def updateLabelLaserPosition(self):
         self.labellasercurrentpos.setText( str(self.laser.position) )
+        self.labellaserordigin.setText( str(self.laser.origin) )
 
     def priorityProduct(self, listvariable, listindprior ):
         '''
@@ -395,6 +408,8 @@ class DesignVisualisation(QFrame):
         self.axisorientation.setCurrentIndex(1)
         # --- reset drawings --- #
         self.resetDrawingItems()
+        # --- reset laser --- #
+        self.laser.__init__()
 
     def resetDrawingItems(self):
         '''

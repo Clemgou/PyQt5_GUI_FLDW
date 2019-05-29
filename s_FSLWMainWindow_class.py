@@ -22,6 +22,7 @@ from s_CompilingGCode_class           import CompilingGCode
 
 import numpy as np
 import pyqtgraph as pqtg
+import os
 
 ################################################################################################ 
 # FUNCTIONS
@@ -33,6 +34,7 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         #self.app = QApplication([]) # only one per application
 
         # --- paths --- #
+        self.localpath  = os.path.dirname(os.path.realpath(__file__))
         self.importpath = 'Dependencies_import/'
         self.iconpath   = 'IMGdirectory/'
         # --- initialisations --- #
@@ -175,7 +177,7 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabTxtAbl(self):
-        newtabindex = self.centraltab.addTab( AblationWriting(self.simuobjct), "TXTAbl" )
+        newtabindex = self.centraltab.addTab( AblationWriting(path=self.localpath+'/'+self.importpath), "TXTAbl" )
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabDirCoupl(self):

@@ -694,16 +694,18 @@ class LASERSimulated():
         for i in range(1,n):
             coord    = codeline[i]
             if   coord[0] == 'X':
-                new_origin[0] = -self.evalWord(coord[1:]) + self.position[0]
+                new_origin[0] = -self.evalWord(coord[1:]) + self.position[0] + self.origin[0]
             elif coord[0] == 'Y':
-                new_origin[1] = -self.evalWord(coord[1:]) + self.position[1]
+                new_origin[1] = -self.evalWord(coord[1:]) + self.position[1] + self.origin[1]
             elif coord[0] == 'Z':
-                new_origin[2] = -self.evalWord(coord[1:]) + self.position[2]
+                new_origin[2] = -self.evalWord(coord[1:]) + self.position[2] + self.origin[2]
             else:
                 print('Error: wrong command in doLINEAR.\n{}'.format(coord[0]))
                 return None
         # --- set coord argument w.r.t the coordinate mode --- #
+        self.setLaserPosition( self.position + self.origin - new_origin )
         self.setLaserOrigin( new_origin )
+
 
 ################################################################################################
 # CODE

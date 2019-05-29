@@ -22,13 +22,14 @@ from s_WriteCommandCode_class         import WriteCommandCode
 from s_SimulationDesign_class         import SimulationDesign
 
 import numpy as np
+import os
 
 ################################################################################################
 # FUNCTIONS
 ################################################################################################
 
 class AblationWriting(QWidget):
-    def __init__(self, simuobjct=None):
+    def __init__(self, simuobjct=None, path=None):
         super().__init__()
         self.extsimuobjct   = simuobjct
         self.pixelsize      = [100,300] #um [X,Y]
@@ -44,6 +45,11 @@ class AblationWriting(QWidget):
         self.coretext       = ''
         self.defaultcolor   = 'g'
         self.whichalphabet  = 'f_alphabetcoord.txt' # default, the most standard one
+        print('PRINTING',sys.path[0])
+        if path == None:
+            self.localpath  = os.path.dirname(os.path.realpath(__file__))
+        else:
+            self.localpath  = path
 
         self.initUI()
         self.cmdwriter      = WriteCommandCode(self.filename)
@@ -230,17 +236,12 @@ class AblationWriting(QWidget):
         The construction of the dictionary will be implemented via the extraction of the data
         in a text file. Everything will be in 'string' type.
         '''
-        PATHS = ['./', './FSLM_GUI_pyqt_import/']
-        for path_ in PATHS:
-            try:
-                filename = path_+self.whichalphabet
-                Data     = self.myLoadTxt(filename)
-            except:
-                pass
+        filename = self.localpath+'/'+self.whichalphabet
+        Data     = self.myLoadTxt(filename)
         n = len(Data)
         for i in range(n):
             self.dicalphabnum[Data[i][0]] = Data[i][1]
-            print(Data[i][0])
+            #print(Data[i][0])
         # --- add special characters --- #
         self.dicalphabnum[' '] = ['space']
         self.dicalphabnum['#'] = self.dicalphabnum['/#']
@@ -543,7 +544,7 @@ class AblationWriting(QWidget):
             return None
         # ---  --- #
         radius,theta_start,theta_end = self.diccoordpxl[char], 0, 360 #in degree
-        print('DOT PARAMETER:',radius,theta_start,theta_end)
+        #print('DOT PARAMETER:',radius,theta_start,theta_end)
         coretxt  += self.cmdwriter.cmdSTOP()  #PSOCONTROL X OFF 
         coretxt  += self.cmdwriter.cmdLINEAR(+round(radius,6))
         coretxt  += self.cmdwriter.cmdSTART() #PSOCONTROL X ON
