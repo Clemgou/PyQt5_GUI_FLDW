@@ -28,6 +28,7 @@ class PreviewCommandCode(QFrame):
         super().__init__()
         self.defaultname = defaultname #'SWG_pygenerated.txt'
         self.filename = None
+        self.readable_ext   = ['.txt', '.pgm']
         self.initUI()
 
     def initUI(self):
@@ -89,7 +90,7 @@ class PreviewCommandCode(QFrame):
         # --- selecting only .txt files --- #
         txt_filename = []
         for name in local_filename:
-            if name[-4:] == '.txt':
+            if name[-4:] in self.readable_ext:
                 txt_filename.append( name )
         # --- alphabet ordering --- #
         txt_filename.sort()

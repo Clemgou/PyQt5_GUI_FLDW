@@ -62,6 +62,8 @@ class AblationWriting(QWidget):
         # --- PreviewCommandCode frame --- #
         self.previewcode = PreviewCommandCode('Abl_pygenerated.txt')
         self.previewcode.filename.textChanged.connect(self.setNewFilename)
+        self.previewcode.textedit.setMinimumWidth(0)
+        self.previewcode.textedit.setMinimumHeight(400)
         self.setNewFilename() # initialise
         # --- make frames --- #
         self.initFramePrevVisual()
@@ -70,13 +72,13 @@ class AblationWriting(QWidget):
         self.setPrevVisualFilename()
         # --- make layout --- #
         self.layout = QVBoxLayout()
-        hlayout = QVBoxLayout()
-        hlayout.addWidget(self.frameEditZone)
-        hlayout.addWidget(self.framePrevVisual)
-        hwidgetforsplitter = QWidget()
-        hwidgetforsplitter.setLayout( hlayout )
-        self.splitter.addWidget( hwidgetforsplitter )
-        self.splitter.addWidget(self.previewcode)
+        vlayout     = QVBoxLayout()
+        vwidget     = QWidget()
+        vlayout.addWidget(self.frameEditZone)
+        vlayout.addWidget(self.previewcode)
+        vwidget.setLayout( vlayout )
+        self.splitter.addWidget(self.framePrevVisual)
+        self.splitter.addWidget( vwidget )
         self.layout.addWidget( self.splitter )
         self.setLayout( self.layout )
 
@@ -94,7 +96,7 @@ class AblationWriting(QWidget):
             self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct) #QFrame()
         # ---  --- #
         self.framePrevVisual.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        self.framePrevVisual.setMinimumSize(400, 400)
+        self.framePrevVisual.setMinimumSize(600, 600)
         self.simuobcj           = self.framePrevVisual.simuobjct
         self.viewobjct          = self.simuobcj.view
         # --- set default color --- #

@@ -29,6 +29,7 @@ class GCodeList(QFrame):
         super().__init__()
         self.gcode_list  = {}
         self.id_list     = []
+        self.readable_ext= ['.txt', '.pgm']
         self.gridlayout  = QGridLayout(self)
         self.initUI()
 
@@ -81,7 +82,7 @@ class GCodeList(QFrame):
         # --- selecting only .txt files --- #
         txt_filename = []
         for name in local_filename:
-            if name[-4:] == '.txt':
+            if name[-4:] in self.readable_ext:
                 txt_filename.append( name )
         # --- alphabet ordering --- #
         txt_filename.sort()
