@@ -358,6 +358,7 @@ class AblationWriting(QWidget):
 
     def writeGCode(self):
         self.makeCoreTextINCREMENTAL()
+        self.cleanUnnecessaryOnOff()
         self.cmdwriter.setTextNameFile(  self.filename )
         self.cmdwriter.setDicVariable(   self.dicwritingvar )
         self.cmdwriter.initGroups()
@@ -367,7 +368,7 @@ class AblationWriting(QWidget):
         self.cmdwriter.appendToTextFile( self.cmdwriter.paramDefinition() )
         self.cmdwriter.appendToTextFile( self.cmdwriter.initializeLaserWriting() )
         self.cmdwriter.appendToTextFile( "\n'~~~~ Writing ~~~~'\n" )
-        self.cmdwriter.appendToTextFile( self.coretext)
+        self.cmdwriter.appendToTextFile( self.coretext )
         self.cmdwriter.appendToTextFile( self.cmdwriter.endOfScript() )
         self.previewcode.refreshTextFile()
         return None
@@ -490,19 +491,22 @@ class AblationWriting(QWidget):
             # --- check if not special character --- #
             if   character[i] == 'dot':
                 coretxt += self.makeDotCharacter(character[i])
+                coord    = coord_prev
             elif character[i] == 'start':
                 coretxt  += self.cmdwriter.cmdSTART() #PSOCONTROL X ON
+                coord    = coord_prev
             elif character[i] == 'stop':
                 coretxt  += self.cmdwriter.cmdSTOP()  #PSOCONTROL X ON
+                coord    = coord_prev
             else:
                 # --- if normal point coordinate --- #
                 coord     = self.diccoordpxl[character[i]]
                 increment = np.array([coord[0], coord[1]]) - coord_prev
                 coretxt  += self.cmdwriter.cmdLINEAR(round(increment[0],3), round(increment[1],3))
-                coord_prev = coord
+            coord_prev = coord
         coretxt  += self.cmdwriter.cmdSTOP()  #PSOCONTROL X OFF 
         # --- return to initial --- #
-        coord     = self.diccoordpxl[character[-1]] # coordinate where we should end.
+        coord_last= coord #self.diccoordpxl[character[-1]] # coordinate where we should end.
         coretxt  += self.cmdwriter.cmdLINEAR(round(-coord[0],3), round(-coord[1],3)) # return to origin, ie point 0.
         # ---  --- #
         coretxt  += '\n'
@@ -563,6 +567,26 @@ class AblationWriting(QWidget):
         self.coretext += self.cmdwriter.cmdSetSpeedVariable()
         self.coretext += self.cmdwriter.cmdINCREMENTAL()
         self.coretext += self.convertTextToCommandINCREMENTAL()
+        return None
+
+    def cleanUnnecessaryOnOff(self):
+        texttoclean = self.coretext
+        texttoclean = texttoclean.splitlines()
+        for i in reversed(range(2,len(texttoclean)-2)):
+            line_pre = texttoclean[i-2]
+            line_cur = texttoclean[i]
+            line_aft = texttoclean[i+2]
+            try:
+                if   line_cur[-2:] == 'ON' and line_aft[-3:]=='OFF':
+                    #print('WOOHOO')
+                    texttoclean.pop(i+1)
+                    texttoclean.pop(i)
+                elif line_cur[-3:] == 'OFF' and line_aft[-2:]=='ON':
+                    #print('YAAHAA')
+                    texttoclean.pop(i+1)
+                    texttoclean.pop(i)
+            except: pass
+        self.coretext = '\n'.join(texttoclean)
         return None
 
 ################################################################################################

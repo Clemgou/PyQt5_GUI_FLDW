@@ -406,7 +406,7 @@ def cmdSTART(self):
 # ------------------------------------------------------ #
 
 def cmdSTOP(self):
-	gcodetxt = 'PSOCONTROL X OFF\n\nDWELL 0.1\n'
+	gcodetxt = 'PSOCONTROL X OFF\nDWELL 0.1\n'
 	return gcodetxt
 
 # ------------------------------------------------------ #
