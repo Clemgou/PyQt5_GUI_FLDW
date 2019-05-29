@@ -32,6 +32,15 @@ class GCodeList(QFrame):
         self.gridlayout  = QGridLayout(self)
         self.initUI()
 
+    class ColorChoice(QComboBox):
+        def __init__(self, defaultname=None):
+            super().__init__()
+            self.colorlabel = ['Blue', 'Red', 'Green', 'White']
+            self.initColorChoice()
+        def initColorChoice(self):
+            for color in self.colorlabel:
+                self.addItem(color)
+
     def initUI(self):
         # --- frame style --- #
         self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
@@ -105,7 +114,7 @@ class GCodeList(QFrame):
         part_removeItem = partial( self.removeGCodeItem, id_gcode_item )
         removebutton.clicked.connect( part_removeItem )
         # ---  --- #
-        self.gcode_list[id_gcode_item] = [ql_filename, cb_filename, removebutton, QLabel('Name:')]
+        self.gcode_list[id_gcode_item] = [ql_filename, cb_filename, removebutton, self.ColorChoice(), QLabel('Name:')]
         # ---  --- #
         self.makeLayout()
 
@@ -140,7 +149,7 @@ class GCodeList(QFrame):
         N = len(self.id_list)
         # --- set directory choice --- #
         self.gridlayout.addWidget( self.choosedirectory, 0,0)
-        self.gridlayout.addWidget( self.directorylabel , 0,1 , 1,3)
+        self.gridlayout.addWidget( self.directorylabel , 0,1 , 1,4)
         # --- set add button --- #
         for i in range(N):
             id_item = self.id_list[i]
@@ -148,9 +157,10 @@ class GCodeList(QFrame):
             # --- make list choice name file --- #
             self.gridlayout.addWidget( gcode_item[-1], i+1,0 )
             self.gridlayout.addWidget( gcode_item[1] , i+1,1 , 1,2)
-            self.gridlayout.addWidget( gcode_item[2] , i+1,3)
+            self.gridlayout.addWidget( gcode_item[3] , i+1,3)
+            self.gridlayout.addWidget( gcode_item[2] , i+1,4)
         # --- set add button --- #
-        self.gridlayout.addWidget(self.addbutton, (N+2),0 , 1,4)
+        self.gridlayout.addWidget(self.addbutton, (N+2),0 , 1,5)
         # --- avoid stretching of the gridlayout --- #
         for i in range(N+2):
             self.gridlayout.setRowStretch(i, 1) # not completelly understood the effect of value higher than 0

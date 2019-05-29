@@ -78,8 +78,10 @@ class CompilingGCode(QWidget):
         for key in gcode_file_list:
             ql_filename = gcode_file_list[key][0]
             cb_filename = gcode_file_list[key][1]
+            color_choice= gcode_file_list[key][3]
             if ql_filename.text()[-4:] == '.txt' and cb_filename.currentIndex() !=0:
                 self.framePrevVisual.setFilename( ql_filename )
+                self.framePrevVisual.setSimulationColor( color_choice.currentIndex() )
                 self.framePrevVisual.makeSimulation()
 
 ################################################################################################
