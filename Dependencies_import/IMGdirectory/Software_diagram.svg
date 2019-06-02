@@ -16,7 +16,7 @@
    id="svg8"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="Software_diagram.svg"
-   inkscape:export-filename="/home/cgou/ENS/STAGE/M2--stage/FLDW/Final_Design/FSLM_GUI_pyqt_import/IMGdirectory/Software_diagram.png"
+   inkscape:export-filename="/home/cgou/ENS/STAGE/M2--stage/PyQt5_GUI_FLDW/Dependencies_import/IMGdirectory/Software_diagram.png"
    inkscape:export-xdpi="95.599998"
    inkscape:export-ydpi="95.599998">
   <defs
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="109.77016"
-     inkscape:cy="523.29189"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="249.534"
+     inkscape:cy="402.27063"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -43,7 +43,8 @@
      inkscape:snap-global="true"
      inkscape:snap-bbox="false"
      inkscape:snap-intersection-paths="true"
-     inkscape:snap-smooth-nodes="true">
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-grids="false">
     <inkscape:grid
        type="xygrid"
        id="grid10"
@@ -68,6 +69,28 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-86.999946)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.03532612;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 62.119562,157.80612 0,41.41303"
+       id="path985"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:#ed7f7f;fill-opacity:1;stroke:#e12a2a;stroke-width:0.20706525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect816-3-3-6-3-6-7-5-6-3"
+       width="46.589676"
+       height="10.353263"
+       x="41.41304"
+       y="185.21068"
+       ry="2.0706527" />
+    <rect
+       style="opacity:1;fill:#ed7f7f;fill-opacity:1;stroke:#e12a2a;stroke-width:0.20706525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect816-3-3-6-3-6-7-5-6"
+       width="46.589676"
+       height="10.353263"
+       x="41.413036"
+       y="204.39572"
+       ry="2.0706527" />
     <rect
        style="opacity:1;fill:#f6c324;fill-opacity:1;stroke:#e12a2a;stroke-width:0.20706525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect816-3-7"
@@ -214,7 +237,7 @@
          style="stroke-width:0.10353263">GCodeSimulation</tspan></text>
     <g
        id="g931"
-       transform="matrix(0.3913044,0,0,0.3913044,-56.942951,77.825123)">
+       transform="matrix(0.3913044,0,0,0.3913044,-56.942951,74.650121)">
       <rect
          ry="5.2916675"
          y="270.54169"
@@ -341,11 +364,6 @@
        sodipodi:nodetypes="ssssccssssccsss" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1.03532612;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 62.119562,157.80612 v 25.88314"
-       id="path985"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1.03532612;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 82.826088,157.80612 v 10.35325"
        id="path987"
        inkscape:connector-curvature="0" />
@@ -353,11 +371,6 @@
        style="fill:none;stroke:#000000;stroke-width:1.03532612;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 77.649455,157.80612 v 10.35325"
        id="path989"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1.03531463;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 62.119562,194.04254 v 5.17663"
-       id="path991"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1.03532612;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -430,5 +443,45 @@
          d="m 1810,663.85742 c -22.16,0 -40,17.84005 -40,40 V 823.8583 c 0,24 -17,40.00001 -40,40 l -470,-8.8e-4 c -22.16,-4e-5 -40,17.83996 -40,40 v 80 c 0,22.16008 17.84,39.99998 40,39.99998 h 550 110 320 c 22.16,0 40,-17.84 40,-39.99998 v -280 c 0,-22.15995 -17.84,-40 -40,-40 z"
          style="opacity:1;fill:none;fill-opacity:1;stroke:#0070e0;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:8.46666718px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458335"
+       x="29.611301"
+       y="79.234581"
+       id="text877"><tspan
+         sodipodi:role="line"
+         id="tspan875"
+         x="29.611301"
+         y="79.234581"
+         style="stroke-width:0.26458335">Application architecture</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#151b25;stroke-width:1.32291675;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect879"
+       width="161.39584"
+       height="145.52083"
+       x="-5.2916665"
+       y="72.104126" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.70950127px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08467191"
+       x="45.765247"
+       y="212.85339"
+       id="text910"><tspan
+         sodipodi:role="line"
+         id="tspan908"
+         x="45.765247"
+         y="212.85339"
+         style="stroke-width:0.08467191">WriteCommand_functions</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.70950127px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08467191"
+       x="46.121746"
+       y="193.72853"
+       id="text910-5"><tspan
+         sodipodi:role="line"
+         id="tspan908-6"
+         x="46.121746"
+         y="193.72853"
+         style="stroke-width:0.08467191">LASERSimulated_functions</tspan></text>
   </g>
 </svg>

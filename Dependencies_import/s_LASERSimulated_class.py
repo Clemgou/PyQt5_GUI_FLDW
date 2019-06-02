@@ -21,6 +21,8 @@ from numpy import arctan as atan
 from numpy import arccos as acos
 from numpy import arcsin as asin
 
+from s_LASERSimulated_functions import *
+
 ################################################################################################
 # FUNCTIONS
 ################################################################################################
@@ -51,6 +53,20 @@ class LASERSimulated():
         self.initDictionaryInstruction()
         self.setSpecialCommand()
         #self.initFunctionForEvaluation() # doesn't work
+
+   # --- Method attribution from external modul --- #
+    '''
+    '''
+    doDVARcmd        = doDVARcmd
+    doLINEARcmd      = doLINEARcmd
+    doABSOLUTEcmd    = doABSOLUTEcmd
+    doINCREMENTALcmd = doINCREMENTALcmd
+    doPSOCONTROLcmd  = doPSOCONTROLcmd
+    doFORcmd         = doFORcmd
+    doNEXTcmd        = doNEXTcmd
+    doG2cmd          = doG2cmd
+    doG3cmd          = doG3cmd
+    doG92cmd         = doG92cmd
 
     def initFunctionForEvaluation(self):
         from numpy import sin as SIN
