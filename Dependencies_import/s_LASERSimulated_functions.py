@@ -76,6 +76,10 @@ def doLINEARcmd(self):
         elif coord[0] == 'Z':
             newpos_abs[2] = self.evalWord(coord[1:])
             newpos_inc[2] = self.evalWord(coord[1:])
+        elif coord[0] == 'F':
+            self.setSpeed( self.evalWord(coord[1:]) )
+        elif coord[0] == "'":
+            pass
         else:
             print('Error: wrong command in doLINEAR.\n{}'.format(coord[0]))
             return None

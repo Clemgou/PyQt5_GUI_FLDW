@@ -453,6 +453,12 @@ class LASERSimulated():
         n        = len(key_list)
         self.dicwaveguides[n+1] = self.current_WG
 
+    def setSpeed(self, value):
+        '''
+        Function not implemented, yet.
+        '''
+        return None
+
 ################################################################################################
 # CODE
 ################################################################################################
