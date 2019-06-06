@@ -49,7 +49,7 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         Initialize the MainWindow configuration and display.
         '''
         # --- geometry and position --- #
-        x0, y0, w, h = 150, 100, 600, 800
+        x0, y0, w, h = 150, 100, 650, 800
         self.setGeometry(x0, y0, w, h)
         self.setWindToCenter() # use the method defined below to center the window in the screen
         # --- names and titles --- #

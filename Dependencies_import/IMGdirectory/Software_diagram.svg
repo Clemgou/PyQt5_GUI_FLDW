@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.0000001"
-     inkscape:cx="249.534"
-     inkscape:cy="402.27063"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="283.68683"
+     inkscape:cy="708.90934"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -44,7 +44,7 @@
      inkscape:snap-bbox="false"
      inkscape:snap-intersection-paths="true"
      inkscape:snap-smooth-nodes="true"
-     inkscape:snap-grids="false">
+     inkscape:snap-grids="true">
     <inkscape:grid
        type="xygrid"
        id="grid10"
@@ -458,9 +458,9 @@
        style="opacity:1;fill:none;fill-opacity:1;stroke:#151b25;stroke-width:1.32291675;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect879"
        width="161.39584"
-       height="145.52083"
+       height="148.14006"
        x="-5.2916665"
-       y="72.104126" />
+       y="69.484886" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:2.70950127px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08467191"

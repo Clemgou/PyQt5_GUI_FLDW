@@ -88,9 +88,11 @@ class LASERSimulated():
         # --- INCREMENTAL --- #
         self.diccommands['INCREMENTAL'] = self.doINCREMENTALcmd
         # --- G3 --- #
-        self.diccommands['G3'] = self.doG3cmd
+        self.diccommands['G3']  = self.doG3cmd
+        self.diccommands['CCW'] = self.doG3cmd
         # --- G2 --- #
-        self.diccommands['G2'] = self.doG2cmd
+        self.diccommands['G2']  = self.doG2cmd
+        self.diccommands['CW']  = self.doG2cmd
         # --- G92 --- #
         self.diccommands['G92'] = self.doG92cmd
         # --- DWELL --- #

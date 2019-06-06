@@ -56,10 +56,11 @@ class DesignVisualisation(QFrame):
         # --- make plot widget --- #
         self.plotwidget  = self.simuobjct.view
         # --- make buttons --- #
-        self.simubutton  = QPushButton("Simulate")
-        self.resetbutton = QPushButton('RESET ALL')
-        self.cleanviewbutton = QPushButton('Clean View')
-        self.drawallbutton = QPushButton('Draw All')
+        self.simubutton       = QPushButton("Simulate")
+        self.cleanviewbutton  = QPushButton('Clean View')
+        self.drawallbutton    = QPushButton('Draw All')
+        self.resetbutton      = QPushButton('RESET ALL')
+        self.resetbutton.setStyleSheet("background-color: red")
         # --- make labels --- #
         self.labellasercurrentpos = QLabel( str(self.laser.position) )
         self.labellaserordigin    = QLabel( str(self.laser.origin))
@@ -95,9 +96,9 @@ class DesignVisualisation(QFrame):
         self.plotlayout.addWidget( self.plotwidget )
         gridlayout  = QGridLayout()
         gridlayout.addWidget( QLabel('Fabrication:'), 0,0 , 1,2)
-        gridlayout.addWidget( self.axisorientation, 1,0 , 1,2)
-        gridlayout.addWidget( self.currentcolor, 2,0 , 1,2 )
-        gridlayout.addWidget( self.resetbutton , 3,0 , 1,2 )
+        gridlayout.addWidget( self.resetbutton      , 1,0 , 1,2 )
+        gridlayout.addWidget( self.axisorientation  , 2,0 , 1,2)
+        gridlayout.addWidget( self.currentcolor     , 3,0 , 1,2 )
         hlayout_top = QHBoxLayout()
         hlayout_top.addLayout( gridlayout )
         hlayout_top.addLayout( self.sampleboxlayout )
