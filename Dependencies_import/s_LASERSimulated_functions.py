@@ -46,7 +46,7 @@ def doDVARcmd(self):
                     else:
                         p+=1
                 varname = wordi[:-p]
-                arraysize = eval(wordi[-p+1:-1]) # should be a number
+                arraysize = self.evalWord(wordi[-p+1:-1]) #eval(wordi[-p+1:-1]) # should be a number
                 varval  = [0]*arraysize # generate a list of zeros of size arrasize
                 self.dicvariables[varname] = varval
             else:
@@ -112,7 +112,7 @@ def doPSOCONTROLcmd(self):
     line, line_nbr = self.currentline
     codeline = self.dicGcodecmd[line_nbr]
     n = len(codeline)
-    status = codeline[-1]
+    command, gate, status = codeline[0], codeline[1], codeline[2] #PSOCONTROL X ON/OFF
     old_state = self.isON
     if status == 'ON':
         self.isON = True
@@ -151,7 +151,7 @@ def doFORcmd(self):
     exprss = ''
     for word in codeline[ind_TO+1:]:
         exprss += word
-    limit_val = self.evalExpression(exprss)
+    limit_val = self.evalWord(exprss)#self.evalExpression(exprss)
     # --- retrieve the iteration variable name --- #
     var_exprss = codeline[ind_FOR+1]
     iter_varname = var_exprss # here we assume that the iteration variable is separated from the '=' symbol, as in: '$ii = 0'.

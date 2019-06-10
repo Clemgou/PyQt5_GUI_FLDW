@@ -6,13 +6,13 @@
 ################################################################################################
 
 import sys
-import PyQt5 
+import PyQt5
 from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QWidget, QFrame, QTabWidget, QTableWidget
 from PyQt5.QtWidgets import QBoxLayout,QGroupBox,QHBoxLayout,QVBoxLayout,QGridLayout,QSplitter,QScrollArea
 from PyQt5.QtWidgets import QToolTip, QPushButton, QLabel, QLineEdit, QTextEdit, QCheckBox, QComboBox, QInputDialog, QSlider
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction, QDialog
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction, QDialog, QProgressBar
 from PyQt5.QtGui     import QIcon, QFont
-from PyQt5.QtCore    import QDate, QTime, QDateTime, Qt, QRect
+from PyQt5.QtCore    import QDate, QTime, QDateTime, Qt, QRect, pyqtSlot
 
 from s_MyPyQtObjects          import MyQLabel,MyLineEdit,MyFrameFolding
 from s_SimulationDesign_class import SimulationDesign 
@@ -27,7 +27,7 @@ from functools import partial
 ################################################################################################
 
 class DesignVisualisation(QFrame):
-    def __init__(self, simuobjct=None, filename=None):
+    def __init__(self, simuobjct=None, filename=None, errorbox=None):
         super().__init__()
         self.dicvariable    = {}
         if filename == None:
@@ -43,6 +43,8 @@ class DesignVisualisation(QFrame):
             self.simuobjct  = simuobjct
         self.layout         = QVBoxLayout(self)
         self.whichsimu      = None
+        self.progressbar    = QProgressBar()
+        self.warningmesg    = QMessageBox()
         self.initUI()
 
     def initUI(self):
@@ -89,6 +91,8 @@ class DesignVisualisation(QFrame):
         self.resetbutton.clicked.connect( self.resetSimulation )
         # --- make the arrow displacement widget --- #
         self.makePositionArrows()
+        # --- make progess bar --- #
+        self.makeProgressBarLayout()
         # --- make layout --- #
         self.makeLaserPropertiesLayout()
         self.makeSampleBoxLayout()
@@ -109,7 +113,10 @@ class DesignVisualisation(QFrame):
         top_frame.setMaximumHeight( 150 )
         # ---  --- #
         hlayout_bottom = QHBoxLayout()
-        hlayout_bottom.addWidget( self.sliderswidget )
+        vlayout        = QVBoxLayout()
+        vlayout.addWidget( self.sliderswidget )
+        vlayout.addLayout( self.progressbar_layout )
+        hlayout_bottom.addLayout( vlayout )
         hlayout_bottom.addWidget( self.arrowwidget )
         # ---  --- #
         bottom_frame = QFrame()
@@ -341,6 +348,14 @@ class DesignVisualisation(QFrame):
         self.arrowwidget.setMaximumHeight( 150 )
         self.arrowwidget.setMaximumWidth(  250 )
 
+    def makeProgressBarLayout(self):
+        self.progressbar_layout = QHBoxLayout()
+        self.progressbar_layout.addWidget( self.progressbar )
+        # --- connect the progress bar status --- #
+        self.laser.currprogrss.connect( self.updateProgressBar )
+        self.laser.progrssnbrmax.connect( self.setMaxProgressBar )
+
+
     def cameraGoNegativeY(self):
         X = np.array([0.,-1., 0.])
         self.simuobjct.displaceCamera(X)
@@ -460,6 +475,7 @@ class DesignVisualisation(QFrame):
         self.activateLASER()
 
     def activateLASER(self):
+        self.startProgressBar()
         self.laser.readGCode()
         self.updateLabelLaserPosition()
         #self.drawInstructions()
@@ -468,6 +484,8 @@ class DesignVisualisation(QFrame):
     def drawInstructions(self):
         self.instructions =  self.laser.dicinstruction.copy()
         for key in self.instructions:
+            progbar_currval += 1
+            self.progressbar.setValue( progbar_currval )
             drawtype = self.instructions[key][0]
             if   drawtype == 'LINEAR':
                 args       = self.instructions[key][1]
@@ -512,11 +530,35 @@ class DesignVisualisation(QFrame):
 
     def drawInstructions_optim(self):
         self.waveguides = self.laser.dicwaveguides
+        # --- progress bar related parameters --- #
+        self.startProgressBar()
+        N = len(list(self.waveguides.keys()))
+        self.setMaxProgressBar(N)
+        current_it = 0
         for key in self.waveguides:
             width = 2. #scanNbr
             color = self.simucolor
             X     = self.waveguides[key]
             self.simuobjct.drawListCoordinate(X, width, color=color)
+            # --- update progress bar --- #
+            current_it += 1
+            self.progressbar.setValue( current_it )
+
+    def startProgressBar(self):
+        self.progressbar.setMinimum(0)
+        self.progressbar.setValue(0)
+        self.progressbar.show()
+
+    @pyqtSlot(int)
+    def setMaxProgressBar(self, Nmax):
+        self.progressbar.setMaximum(Nmax)
+
+    @pyqtSlot(int)
+    def updateProgressBar(self, val):
+        self.progressbar.setValue(val)
+
+    def hideProgressBar(self):
+        self.progressbar.hide()
 
 
     def makeSimulationSWG(self):

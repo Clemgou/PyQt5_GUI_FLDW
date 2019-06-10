@@ -252,6 +252,33 @@ class MyParameter():
             print("Error: This is not a loop variable")
             return None
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+class MyErrorBox(QMessageBox):
+    '''
+    '''
+    def __init__(self):
+        super().__init__()
+        self.displaytext   = ''
+        self.displaywidget = None
+        self.layout        = None
+
+    def initGUi(self):
+        return None
+
+    def displayErrorBox(self):
+        self.show()
+
+    def selfClosing(self):
+        self.exec_()
+
+    def addText(self, text):
+        self.displaytext += text
+
+    def resetText(self):
+        self.displaytext = ''
+
+    def makeLayout(self):
+        return None
 
 ################################################################################################
 # CODE

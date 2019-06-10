@@ -549,6 +549,7 @@ class AblationWriting(QWidget):
             self.raiseErrorMessageBox('Not the right input for makeDotCharacter.')
             return None
         # ---  --- #
+        coretxt  += 'G17\n'
         radius,theta_start,theta_end = self.diccoordpxl[char], 0, 360 #in degree
         #print('DOT PARAMETER:',radius,theta_start,theta_end)
         coretxt  += self.cmdwriter.cmdSTOP()  #PSOCONTROL X OFF 

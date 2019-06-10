@@ -10,16 +10,21 @@ import PyQt5
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 
 import numpy as np
 from numpy import sin
 from numpy import cos
-from numpy import sin as SIN
-from numpy import cos as COS
+from numpy import tan    as tan
 from numpy import arctan as atan
 from numpy import arccos as acos
 from numpy import arcsin as asin
+from numpy import tan    as TAN
+from numpy import sin    as SIN
+from numpy import cos    as COS
+from numpy import arctan as ATAN
+from numpy import arccos as ACOS
+from numpy import arcsin as ASIN
 
 from s_LASERSimulated_functions import *
 
@@ -27,7 +32,7 @@ from s_LASERSimulated_functions import *
 # FUNCTIONS
 ################################################################################################
 
-class LASERSimulated():
+class LASERSimulated(QObject):
     '''
     This class will interpret a Gcode program and generate a set of instructions
     that can be drawn using the SimulationDesign class.
@@ -37,6 +42,7 @@ class LASERSimulated():
     next line.
     '''
     def __init__(self):
+        super().__init__()
         self.txtGcode       = ''
         self.dicGcodecmd    = {}
         self.dicinstruction = {}
@@ -53,8 +59,14 @@ class LASERSimulated():
         self.initDictionaryInstruction()
         self.setSpecialCommand()
         #self.initFunctionForEvaluation() # doesn't work
+    # --- defining signals --- #
+    '''
+    Apparently signals must be defined outside of any method, as part of a subclass of the object.
+    '''
+    currprogrss    = pyqtSignal(int)
+    progrssnbrmax  = pyqtSignal(int)
 
-   # --- Method attribution from external modul --- #
+    # --- Method attribution from external modul --- #
     '''
     '''
     doDVARcmd        = doDVARcmd
@@ -205,11 +217,13 @@ class LASERSimulated():
         self.resetGCodeCommandDictionary()
         self.resetInstructionDictionary()
         self.resetWaveGuideDictionary()
-        # --- read code and make instructions  --- #
+        # --- read code and make instructions  --- # 
         self.breakdownTextCode()
         keys = list(self.dicGcodecmd.keys())
         N = len(keys)
+        self.progrssnbrmax.emit(N)
         self.currentline_nbr = 0
+        self.currprogrss.emit(self.currentline_nbr)
         while self.currentline_nbr < N:
             line_nbr = self.currentline_nbr
             line     = self.dicGcodecmd[keys[line_nbr]]
@@ -225,6 +239,7 @@ class LASERSimulated():
                         self.diccommands[word0]() # exec the method srocked in the dictionary
             #print(self.currentline_nbr)
             self.currentline_nbr += 1
+            self.currprogrss.emit(self.currentline_nbr)
 
     def declareVariables(self):
         self.dicvariables['$STATUS']['Status_position'].updateStatusPosition( self.position.copy() )
@@ -247,17 +262,6 @@ class LASERSimulated():
                 ind_cmmt = i
                 return line[:i]
         return line
-
-    def evaluate(self, str_to_eval):
-        if type(str_to_eval) != type(''):
-            print('Error: not a string in input.\nInput: {}'.format(str_to_eval))
-            return None
-        try:
-            val = eval(str_to_eval)
-            return val
-        except:
-            print('Error: the string to evaluate is not working.\nstring: {}'.format(str_to_eval))
-            return None
 
     def isNumber(self, word):
         '''
@@ -328,19 +332,27 @@ class LASERSimulated():
 
     def evalWord(self, word):
         '''
+        Method to evaluate any type of word in the GCode.
+        We first test if the word to evaluate is indeed a string, then we look for which categorie of evaluation
+        the word belongs.
         '''
-        if   self.isVariable(word):
+        # --- is a string ? --- #
+        if type(word) != type(''):
+            print('ERROR: word to evaluate is not a string type, something is wrong.\nword is:{}'.format(word))
+            return None
+        # --- which category ? --- #
+        if   self.isNumber(word):
+            return eval(word)
+        elif self.isVariable(word):
             return self.evalVariable(word)
         elif self.isStatusVariable(word):
             return self.evalStatusVariable(word)
         elif self.isExpression(word):
             return self.evalExpression(word)
-        elif self.isNumber(word):
-            return eval(word)
         elif self.isComment(word):
             return None
         else:
-            print('Error: Could not evaluate the given word.\n{}'.format(word))
+            print('Error: Could not evaluate the given word.\nword is:{}'.format(word))
             return None
 
     def evalStatusVariable(self, stat_var):
@@ -398,9 +410,12 @@ class LASERSimulated():
         for key in self.dicvariables:
             varname = key[1:] # indeed we get rid of the '$' symbol
             value   = self.dicvariables[key]
-            exec( 'global '+varname )
-            exec( varname+' = '+str(value) )
-            #print('global ',varname, value)
+            try:
+                exec( 'global '+varname )
+                exec( varname+' = '+str(value) )
+            except:
+                print('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
+                return None
         # --- built the expression string to evaluate --- #
         exprss = ''
         for charac in word:
@@ -427,8 +442,12 @@ class LASERSimulated():
         for key in self.dicvariables:
             varname = key[1:] # indeed we get rid of the '$' symbol
             value   = self.dicvariables[key]
-            exec( 'global '+varname )
-            exec( varname+' = '+str(value) )
+            try:
+                exec( 'global '+varname )
+                exec( varname+' = '+str(value) )
+            except:
+                print('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
+                return None
         # --- concatenate the string to evaluate --- #
         assgnmt = ''
         for word in line:
@@ -441,7 +460,11 @@ class LASERSimulated():
         assgnmt = assgnmt_new
         # --- make assignement --- #
         #print('Assignement: ', assgnmt )
-        exec( assgnmt )
+        try:
+            exec( assgnmt )
+        except:
+                print('ERROR: execValueAssignement as encountered a problem and cannot execute the given variname and/or value.')
+                return None
         # --- reassigning all variables their new value --- #
         for key in self.dicvariables:
             varname = key[1:]
