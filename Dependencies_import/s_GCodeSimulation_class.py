@@ -20,7 +20,6 @@ from s_PreviewCommandCode_class       import PreviewCommandCode
 from s_DesignVisualisation_class      import DesignVisualisation
 from s_WriteCommandCode_class         import WriteCommandCode
 from s_SimulationDesign_class         import SimulationDesign
-from s_LASERSimulated_class           import LASERSimulated
 
 import numpy as np
 
@@ -29,9 +28,10 @@ import numpy as np
 ################################################################################################
 
 class GCodeSimulation(QWidget):
-    def __init__(self, simuobjct=None):
+    def __init__(self, simuobjct=None, log=None):
         super().__init__()
         self.extsimuobjct   = simuobjct
+        self.log            = log
         self.instructions   = {}
         self.coretext       = ''
         self.simucolor      = 'b'
@@ -50,8 +50,6 @@ class GCodeSimulation(QWidget):
         self.initFramePrevVisual()
         self.framePrevVisual.setFilename( self.framePreviewcode.filename )
         self.loadFilename()
-        # --- make LASER --- #
-        self.laser = LASERSimulated()
         # --- make connections --- #
         self.framePreviewcode.filename.returnPressed.connect( self.setNewFilename )
         #self.framePreviewcode.filename.returnPressed.connect( self.loadFilename )
@@ -64,10 +62,7 @@ class GCodeSimulation(QWidget):
 
     def initFramePrevVisual(self):
         # ---  --- #
-        if self.extsimuobjct==None:
-            self.framePrevVisual    = DesignVisualisation() #QFrame()
-        else:
-            self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct) #QFrame()
+        self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct, log=self.log) #QFrame()
         # ---  --- #
         self.framePrevVisual.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.framePrevVisual.setMinimumSize(600, 400)

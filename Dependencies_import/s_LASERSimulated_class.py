@@ -41,8 +41,9 @@ class LASERSimulated(QObject):
     is recognised we translate it into drawing parameters, if not recognised, we pass to
     next line.
     '''
-    def __init__(self):
+    def __init__(self, log):
         super().__init__()
+        self.log            = log
         self.txtGcode       = ''
         self.dicGcodecmd    = {}
         self.dicinstruction = {}
@@ -246,9 +247,13 @@ class LASERSimulated(QObject):
         for key in self.dicvariables:
             varname = key[1:] # indeed we get rid of the '$' symbol
             value   = self.dicvariables[key]
-            exec( 'global '+varname )
-            exec( varname+' = '+str(value) )
-            print('global ', varname, eval(varname) )
+            try:
+                exec( 'global '+varname )
+                exec( varname+' = '+str(value) )
+                print('global ', varname, eval(varname) )
+                self.log.addText('In declareVariables: '+'global '+varname+varname)
+            except:
+                return None
 
     def cleanLineFromComment(self, line):
         '''
@@ -338,7 +343,8 @@ class LASERSimulated(QObject):
         '''
         # --- is a string ? --- #
         if type(word) != type(''):
-            print('ERROR: word to evaluate is not a string type, something is wrong.\nword is:{}'.format(word))
+            print('ERROR: in evalWord, word to evaluate is not a string type, something is wrong.\nWord: {}'.format(word))
+            self.log.addText('ERROR: in evalWord, word to evaluate is not a string type, something is wrong.\nWord: {0} , line number {1}'.format(word, self.currentline[1]))
             return None
         # --- which category ? --- #
         if   self.isNumber(word):
@@ -352,7 +358,8 @@ class LASERSimulated(QObject):
         elif self.isComment(word):
             return None
         else:
-            print('Error: Could not evaluate the given word.\nword is:{}'.format(word))
+            print('Error: in evalWord. Could not evaluate the given word.\nWord: {}'.format(word))
+            self.log.addText('Error: in evalWord. Could not evaluate the given word.\nWord: {0} , line number {1}'.format(word, self.currentline[1]))
             return None
 
     def evalStatusVariable(self, stat_var):
@@ -415,6 +422,7 @@ class LASERSimulated(QObject):
                 exec( varname+' = '+str(value) )
             except:
                 print('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
+                self.log.addText('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
                 return None
         # --- built the expression string to evaluate --- #
         exprss = ''
@@ -447,6 +455,7 @@ class LASERSimulated(QObject):
                 exec( varname+' = '+str(value) )
             except:
                 print('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
+                self.log.addText('ERROR: in declaration of variable. exec function cannot declare global varname and/or assigne value to variable.')
                 return None
         # --- concatenate the string to evaluate --- #
         assgnmt = ''
@@ -464,6 +473,7 @@ class LASERSimulated(QObject):
             exec( assgnmt )
         except:
                 print('ERROR: execValueAssignement as encountered a problem and cannot execute the given variname and/or value.')
+                self.log.addText('ERROR: execValueAssignement as encountered a problem and cannot execute the given variname and/or value.')
                 return None
         # --- reassigning all variables their new value --- #
         for key in self.dicvariables:
@@ -489,7 +499,7 @@ class LASERSimulated(QObject):
 ################################################################################################
 if __name__=='__main__':
     print('STARTING')
-    Laser = LASERSimulated()
+    Laser = LASERSimulated(log=None)
     Laser.loadGCode('Test1.txt')
     Laser.breakdownTextCode()
     Laser.readGCode()

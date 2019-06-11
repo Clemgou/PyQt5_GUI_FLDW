@@ -29,7 +29,7 @@ import os
 ################################################################################################
 
 class AblationWriting(QWidget):
-    def __init__(self, simuobjct=None, path=None):
+    def __init__(self, simuobjct=None, path=None, log=None):
         super().__init__()
         self.extsimuobjct   = simuobjct
         self.pixelsize      = [100,300] #um [X,Y]

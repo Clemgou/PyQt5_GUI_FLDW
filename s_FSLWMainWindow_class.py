@@ -19,6 +19,7 @@ from s_AblationWriting_class          import AblationWriting
 from s_SimulationDesign_class         import SimulationDesign
 from s_GCodeSimulation_class          import GCodeSimulation
 from s_CompilingGCode_class           import CompilingGCode
+from s_LogDisplay_class               import LogDisplay
 
 import numpy as np
 import pyqtgraph as pqtg
@@ -62,15 +63,28 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         self.centraltab    = QTabWidget()
         self.centraltab.setTabShape(0)
         self.centraltab.setTabsClosable(True)
+        self.centraltab.setMovable(True)
         self.centraltab.tabCloseRequested.connect( self.closeTabe )
-        self.centraltab.addTab(self.centralwidget,"Main tab")
         self.setCentralWidget(self.centraltab)
         # --- make background of Main tab --- #
         self.centralwidget.setStyleSheet("background-image: url(./"+self.importpath+self.iconpath+"Software_diagram.png);"+"background-repeat: no;"+"background-position: center;") 
         # --- Common Simulation object --- #
-        self.simuobjct = SimulationDesign()
+        self.simuobjct  = SimulationDesign()
         self.viewlayout = QHBoxLayout()
         self.viewlayout.addWidget(self.simuobjct.view)
+        # --- make  log display tab --- #
+        self.log        = LogDisplay()
+        self.insertNewTabLogDisplay(self.log)
+        self.insertNewTabAppDiagram()
+
+    def initLogCapturePrintOutput(self):
+        '''
+        WORK IN PROGRESS
+        Method that should automatically redirect all outputs from print command to the log object. Thus allowing more
+        versability in the log class.
+        '''
+        out = io.StringIO()
+        redirect_stdout(out)
 
     def initWindowMenu(self):
         '''
@@ -80,11 +94,12 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         # --- set the main menus --- #
         self.filemenu       = self.menubar.addMenu('&File')
         self.structuresmenu = self.menubar.addMenu('&Structures')
+        self.toolsmenu      = self.menubar.addMenu('&Tools')
         self.statusBar()
         # --- set the actions in the different menues --- #
-        self.newStructureItem()
-        self.newFilemenuItem()
-        #self.getFile()
+        self.initFilemenuMenu()
+        self.initStructureMenu()
+        self.initToolsMenu()
 
     def setWindToCenter(self):
         '''
@@ -118,14 +133,24 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
 
         self.filemenu.addAction(openFile)
 
-    def newFilemenuItem(self):
+    def initFilemenuMenu(self):
         # --- Exit application --- #
         closeapp = QAction('&Exit', self) # QAction(QIcon('incon.png'), '&Exit', self)
         closeapp.triggered.connect(self.closeFLDWMainWindow)
         self.filemenu.addAction( '------' )
         self.filemenu.addAction(closeapp)
 
-    def newStructureItem(self):
+    def initToolsMenu(self):
+        # --- Architecture app diagram tab --- #
+        openNewTab = QAction('app diagram    (App Diag)', self)
+        openNewTab.triggered.connect(self.insertNewTabAppDiagram)
+        self.toolsmenu.addAction(openNewTab)
+        ## --- Log display tab --- # #no need since the log tab is not closable
+        #openNewTab = QAction('Log display    (Log)', self)
+        #openNewTab.triggered.connect(self.insertNewTabLogDisplay)
+        #self.toolsmenu.addAction(openNewTab)
+
+    def initStructureMenu(self):
         '''
         Make a new tab window with the display of the chosen structure (SWG, BS, ...).
         '''
@@ -169,28 +194,37 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         self.close()
 
     def insertNewTabSWG(self):
-        newtabindex = self.centraltab.addTab( StraightWaveGuide(self.simuobjct), "SWG" ) # also: addTab(QWidget , QIcon , QString )
+        newtabindex = self.centraltab.addTab( StraightWaveGuide(self.simuobjct, log=self.log), "SWG" ) # also: addTab(QWidget , QIcon , QString )
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabBWG(self):
-        newtabindex = self.centraltab.addTab( StraightWaveGuide(self.simuobjct), "SWG" )
+        newtabindex = self.centraltab.addTab( StraightWaveGuide(self.simuobjct, log=self.log), "SWG" )
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabTxtAbl(self):
-        newtabindex = self.centraltab.addTab( AblationWriting(path=self.localpath+'/'+self.importpath), "TXTAbl" )
+        newtabindex = self.centraltab.addTab( AblationWriting(path=self.localpath+'/'+self.importpath, log=self.log), "TXTAbl" )
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabDirCoupl(self):
-        newtabindex = self.centraltab.addTab(DirectionalCoupler(),"Dir Cpl")
+        newtabindex = self.centraltab.addTab(DirectionalCoupler(log=self.log),"Dir Cpl")
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabGCodeSimu(self):
-        newtabindex = self.centraltab.addTab(GCodeSimulation(),"GCode Simu")
+        newtabindex = self.centraltab.addTab(GCodeSimulation(log=self.log),"GCode Simu")
         self.centraltab.setCurrentIndex( newtabindex )
 
     def insertNewTabMultiGcodeCompile(self):
-        newtabindex = self.centraltab.addTab(CompilingGCode(),"Multi GCode Comp.")
+        newtabindex = self.centraltab.addTab(CompilingGCode(log=self.log),"Multi GCode Comp.")
         self.centraltab.setCurrentIndex( newtabindex )
+
+    def insertNewTabLogDisplay(self, log_objct):
+        newtabindex = self.centraltab.addTab(log_objct,"Log")
+        currentTbaBar = self.centraltab.tabBar()
+        currentTbaBar.setTabButton(newtabindex, PyQt5.QtWidgets.QTabBar.RightSide, QLabel('')) # hide the close button
+        self.centraltab.setCurrentIndex( newtabindex )
+
+    def insertNewTabAppDiagram(self):
+        self.centraltab.addTab(self.centralwidget,"App diag")
 
 ################################################################################################
 # CODE

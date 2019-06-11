@@ -35,7 +35,7 @@ def doDVARcmd(self):
     n = len(codeline)
     for i in range(1,n):
         wordi = codeline[i]
-        if wordi[0]=='$':
+        if   wordi[0]=='$':
             # --- need to check if varibale is an array --- #
             if wordi[-1] == ']':
                 p = 1
@@ -51,8 +51,14 @@ def doDVARcmd(self):
                 self.dicvariables[varname] = varval
             else:
                 self.dicvariables[wordi] = 0 #None
+        elif wordi[0] == "'":
+            break
         else:
-            print('Error: Wrong variable declaration. Must begin with "$".\n{}'.format(wordi))
+            err_msg  = 'Error: wrong command in doDVAR. Must begin with "$".'
+            err_msg += '    Word nbr {0}: {1}.'.format(i,coord)
+            err_msg += '    Codeline nbr {0}: {1}'.format(line_nbr,codeline)
+            print(err_msg)
+            self.log.addText(err_msg)
             return None
 
 def doLINEARcmd(self):
@@ -79,9 +85,13 @@ def doLINEARcmd(self):
         elif coord[0] == 'F':
             self.setSpeed( self.evalWord(coord[1:]) )
         elif coord[0] == "'":
-            pass
+            break
         else:
-            print('Error: wrong command in doLINEAR.\n{}'.format(coord[0]))
+            err_msg  = 'Error: wrong command in doLINEAR, first character is rejected.'
+            err_msg += '    Word nbr {0}: {1}.'.format(i,coord)
+            err_msg += '    Codeline nbr {0}: {1}'.format(line_nbr,codeline)
+            print(err_msg)
+            self.log.addText(err_msg)
             return None
     # --- set coord argument w.r.t the coordinate mode --- #
     if   self.coordmode == 'ABSOLUTE':
@@ -89,7 +99,9 @@ def doLINEARcmd(self):
     elif self.coordmode == 'INCREMENTAL':
         pos_fin = self.position.copy() + newpos_inc
     else:
-        print('Error: wrong coordmode.\n{}'.format(self.coordmode))
+        err_msg  = 'Error: wrong coordmode.\n{}'.format(self.coordmode)
+        print(err_msg)
+        self.log.addText(err_msg)
         return None
     self.position = pos_fin
     # --- make arguments to pass to the associated LINEAR function --- #
@@ -219,6 +231,8 @@ def G2G3Converter(self):
         elif word[0].upper() == 'J':
             center_point_j = self.evalWord(word[1:])
             method   += 'J'
+        elif word[0] == "'":
+            break
     # --- action according to method --- #
     current_pos = self.position.copy()
     if   method == 'PQR':
@@ -250,8 +264,10 @@ def G2G3Converter(self):
         start_ang = np.angle(vect_init[0] + 1j*vect_init[1]) * 180/np.pi
         end_ang   = end_ang
     else:
-        print('Error: with method of G2, G3.\nOne might have forgotten or written something wrong.\nHere the method: {}'.format(method))
-        print('Codeline where is the error: ',codeline)
+        err_msg  = 'Error: with method of G2, G3.\nOne might have forgotten or written something wrong.\nHere the method: {}'.format(method)
+        err_msg += '    Codeline nbr {0}: {1}'.format(line_nbr,codeline)
+        print(err_msg)
+        self.log.addText(err_msg)
         return None
     # --- returning staring, ending angles and radius --- #
     return R, start_ang, end_ang
@@ -356,8 +372,14 @@ def doG92cmd(self):
             new_origin[1] = -self.evalWord(coord[1:]) + self.position[1] + self.origin[1]
         elif coord[0] == 'Z':
             new_origin[2] = -self.evalWord(coord[1:]) + self.position[2] + self.origin[2]
+        elif coord[0] == "'":
+            break
         else:
-            print('Error: wrong command in doLINEAR.\n{}'.format(coord[0]))
+            err_msg  = 'Error: wrong command in doG92, the first character is rejected.'
+            err_msg += '    Word nbr {0}: {1}.'.format(i, coord[0])
+            err_msg += '    Codeline nbr {0}: {1}'.format(line_nbr,codeline)
+            print(err_msg)
+            self.log.addText(err_msg)
             return None
     # --- set coord argument w.r.t the coordinate mode --- #
     self.setLaserPosition( self.position + self.origin - new_origin )

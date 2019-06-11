@@ -15,8 +15,9 @@ from PyQt5.QtGui     import QIcon, QFont
 from PyQt5.QtCore    import QDate, QTime, QDateTime, Qt, QRect, pyqtSlot
 
 from s_MyPyQtObjects          import MyQLabel,MyLineEdit,MyFrameFolding
-from s_SimulationDesign_class import SimulationDesign 
+from s_SimulationDesign_class import SimulationDesign
 from s_LASERSimulated_class   import LASERSimulated
+from s_LogDisplay_class       import LogDisplay
 
 import numpy     as np
 from   itertools import product
@@ -27,7 +28,7 @@ from functools import partial
 ################################################################################################
 
 class DesignVisualisation(QFrame):
-    def __init__(self, simuobjct=None, filename=None, errorbox=None):
+    def __init__(self, simuobjct=None, filename=None, errorbox=None, log=None):
         super().__init__()
         self.dicvariable    = {}
         if filename == None:
@@ -35,12 +36,16 @@ class DesignVisualisation(QFrame):
             self.filename.setText('None')
         else:
             self.filename = filename
-        self.simucolor      = 'b'
-        self.magnification  = [1., 1., 1.]
         if simuobjct==None:
             self.simuobjct  = SimulationDesign()
         else:
             self.simuobjct  = simuobjct
+        if log == None:
+            self.log = LogDisplay()
+        else:
+            self.log = log
+        self.simucolor      = 'b'
+        self.magnification  = [1., 1., 1.]
         self.layout         = QVBoxLayout(self)
         self.whichsimu      = None
         self.progressbar    = QProgressBar()
@@ -54,7 +59,7 @@ class DesignVisualisation(QFrame):
         self.setLineWidth(3)
         self.setMidLineWidth(1)
         # --- make LASER --- #
-        self.laser = LASERSimulated()
+        self.laser = LASERSimulated(log=self.log)
         # --- make plot widget --- #
         self.plotwidget  = self.simuobjct.view
         # --- make buttons --- #
@@ -143,6 +148,7 @@ class DesignVisualisation(QFrame):
             sampleboxZ = eval(sampleboxZ)
         except:
             print('Error: Wrong evaluation of the sample box initial position.')
+            self.log.addText('Error: Wrong evaluation of the sample box initial position.')
             return None
         self.simuobjct.setSampleOrigin( np.array([sampleboxX, sampleboxY, sampleboxZ]) )
         self.makeSimulation()
@@ -157,6 +163,7 @@ class DesignVisualisation(QFrame):
             sampleboxZ = eval(sampleboxZ)
         except:
             print('Error: Wrong evaluation of the sample box initial position.')
+            self.log.addText('Error: Wrong evaluation of the sample box initial position.')
             return None
         self.simuobjct.setSampleSize( sampleboxX, sampleboxY, sampleboxZ )
         self.makeSimulation()
@@ -171,6 +178,7 @@ class DesignVisualisation(QFrame):
             laserz = eval(laserz)
         except:
             print('Error: Wrong evaluation of the Laser initial position.')
+            self.log.addText('Error: Wrong evaluation of the Laser initial position.')
             return None
         self.laser.setLaserPosition( np.array([ laserx, lasery, laserz]) )
         self.updateLabelLaserPosition()
@@ -355,7 +363,6 @@ class DesignVisualisation(QFrame):
         self.laser.currprogrss.connect( self.updateProgressBar )
         self.laser.progrssnbrmax.connect( self.setMaxProgressBar )
 
-
     def cameraGoNegativeY(self):
         X = np.array([0.,-1., 0.])
         self.simuobjct.displaceCamera(X)
@@ -419,6 +426,8 @@ class DesignVisualisation(QFrame):
         if not self.simuobjct.isDrawingitemsReset():
             print("ERROR DICTIONARY OF ITEMS NOT RESET")
             print(self.simuobjct.drawingitems)
+            self.log.addText("ERROR DICTIONARY OF ITEMS NOT RESET")
+            self.log.addText(str(self.simuobjct.drawingitems))
         self.plotwidget = self.simuobjct.view
         self.plotlayout.addWidget( self.plotwidget )
         self.axisorientation.setCurrentIndex(1)

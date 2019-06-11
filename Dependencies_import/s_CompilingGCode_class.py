@@ -26,9 +26,10 @@ import numpy as np
 ################################################################################################
 
 class CompilingGCode(QWidget):
-    def __init__(self, simuobjct=None):
+    def __init__(self, simuobjct=None, log=None):
         super().__init__()
         self.extsimuobjct   = simuobjct
+        self.log            = log
         self.instructions   = {}
         self.coretext       = ''
         self.simucolor      = 'b'
@@ -58,10 +59,7 @@ class CompilingGCode(QWidget):
 
     def initFramePrevVisual(self):
         # ---  --- #
-        if self.extsimuobjct==None:
-            self.framePrevVisual    = DesignVisualisation() #QFrame()
-        else:
-            self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct) #QFrame()
+        self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct, log=self.log) #QFrame()
         # ---  --- #
         self.framePrevVisual.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.framePrevVisual.setMinimumSize(600, 400)

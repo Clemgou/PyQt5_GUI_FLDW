@@ -25,22 +25,23 @@ from functools import partial
 ################################################################################################
 
 class GCodeList(QFrame):
-    def __init__(self, defaultname=None):
-        super().__init__()
-        self.gcode_list  = {}
-        self.id_list     = []
-        self.readable_ext= ['.txt', '.pgm']
-        self.gridlayout  = QGridLayout(self)
-        self.initUI()
 
     class ColorChoice(QComboBox):
         def __init__(self, defaultname=None):
             super().__init__()
             self.colorlabel = ['Blue', 'Red', 'Green', 'White']
             self.initColorChoice()
+            self.setMaximumWidth(100)
         def initColorChoice(self):
             for color in self.colorlabel:
                 self.addItem(color)
+
+    def __init__(self, defaultname=None):
+        super().__init__()
+        self.gcode_list  = {}
+        self.id_list     = []
+        self.readable_ext= ['.txt', '.pgm']
+        self.initUI()
 
     def initUI(self):
         # --- frame style --- #
@@ -48,19 +49,31 @@ class GCodeList(QFrame):
         self.setLineWidth(3)
         self.setMidLineWidth(1)
         self.setMinimumWidth(400)
-        self.setLayout( QVBoxLayout() )
         # --- make widgets --- #
         self.addbutton        = QPushButton('Add')
-        self.choosedirectory  = QPushButton('Directory')
+        self.choosedirectory  = QPushButton('&Dir')
         self.currentdirectory = QFileDialog()
         self.directorylabel   = QLabel()
+        self.scrollarea       = QScrollArea()
+        self.scrollarea.setWidgetResizable(True)
+        self.scrollarea.setEnabled(True)
+        self.scrollarea.setVerticalScrollBarPolicy(PyQt5.QtCore.Qt.ScrollBarAsNeeded)
+        self.scrollarea.setHorizontalScrollBarPolicy(PyQt5.QtCore.Qt.ScrollBarAlwaysOff)
         # --- make connection --- #
         self.addbutton.clicked.connect( self.addGcodeFile )
         self.addbutton.clicked.connect( self.refreshTextFileList )
         self.choosedirectory.clicked.connect( self.chooseNewDirectory )
         # --- make layout --- #
+        self.gcodelistwidget = QWidget()
+        self.gridlayout      = QGridLayout()
+        self.gcodelistwidget.setLayout( self.gridlayout )
+        self.scrollarea.setWidget( self.gcodelistwidget )
+        self.layout          = QVBoxLayout(self)
+        self.layout.addWidget( self.scrollarea )
+        self.setLayout( self.layout )
         self.makeLayout()
         # --- make default --- #
+        self.choosedirectory.setMaximumWidth(50)
         default_path = str( self.currentdirectory.directory().path() )
         self.directorylabel.setText(default_path)
         os.chdir(default_path)
@@ -106,17 +119,21 @@ class GCodeList(QFrame):
         # ---  --- #
         ql_filename    = QLineEdit()
         cb_filename    = QComboBox()
+        ql_label       = QLabel('Name:')
+        removebutton   = QPushButton('remv')
+        # --- set aspect widgets --- #
         cb_filename.setLineEdit( ql_filename )
         self.makeLocalFileList(cb_filename)
-        removebutton   = QPushButton('remv')
+        removebutton.setMaximumWidth(50)
+        ql_label.setMaximumWidth(50)
         # --- make connections --- #
         part_readSelect = partial( self.readSelectedFile, id_gcode_item )
         cb_filename.activated[str].connect( part_readSelect )
         part_removeItem = partial( self.removeGCodeItem, id_gcode_item )
         removebutton.clicked.connect( part_removeItem )
         # ---  --- #
-        self.gcode_list[id_gcode_item] = [ql_filename, cb_filename, removebutton, self.ColorChoice(), QLabel('Name:')]
-        # ---  --- #
+        self.gcode_list[id_gcode_item] = [ql_filename, cb_filename, removebutton, self.ColorChoice(), ql_label]
+        # --- refresh layout --- #
         self.makeLayout()
 
     def removeGCodeItem(self, id_item):
@@ -152,19 +169,22 @@ class GCodeList(QFrame):
         self.gridlayout.addWidget( self.choosedirectory, 0,0)
         self.gridlayout.addWidget( self.directorylabel , 0,1 , 1,4)
         # --- set add button --- #
+        self.gridlayout.addWidget(self.addbutton       , 1,0 , 1,5)
+        # --- set gcode items --- #
         for i in range(N):
             id_item = self.id_list[i]
             gcode_item = self.gcode_list[id_item]
             # --- make list choice name file --- #
-            self.gridlayout.addWidget( gcode_item[-1], i+1,0 )
-            self.gridlayout.addWidget( gcode_item[1] , i+1,1 , 1,2)
-            self.gridlayout.addWidget( gcode_item[3] , i+1,3)
-            self.gridlayout.addWidget( gcode_item[2] , i+1,4)
-        # --- set add button --- #
-        self.gridlayout.addWidget(self.addbutton, (N+2),0 , 1,5)
+            self.gridlayout.addWidget( gcode_item[-1], i+2,0 )
+            self.gridlayout.addWidget( gcode_item[1] , i+2,1 , 1,2)
+            self.gridlayout.addWidget( gcode_item[3] , i+2,3)
+            self.gridlayout.addWidget( gcode_item[2] , i+2,4)
         # --- avoid stretching of the gridlayout --- #
-        for i in range(N+2):
+        #self.gridlayout.setSpacing(5)
+        for i in range(N+3): #seems that the row number needs to be greater than the actual row we set
             self.gridlayout.setRowStretch(i, 1) # not completelly understood the effect of value higher than 0
+        #for c in range(7):
+        #    self.gridlayout.setColumnStretch(c, 1)
 
     def refreshTextFileList(self):
         for key in self.gcode_list:

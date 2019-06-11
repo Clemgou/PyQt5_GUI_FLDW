@@ -41,20 +41,23 @@ class PreviewCommandCode(QFrame):
         self.savebutton  = QPushButton("Save")
         self.rfrshbutton.clicked.connect( self.refreshTextFile )
         self.savebutton.clicked.connect( self.saveTextFile )
-        self.choosedirectory = QPushButton('Choose Directory')
+        self.choosedirectory = QPushButton('&Dir:')
+        self.choosedirectory.setMaximumWidth(50)
         # --- make list choice name file --- #
         self.currentdirectory = QFileDialog()
         self.directorylabel   = QLabel()
         self.filename         = QLineEdit()
         self.filenamechoice   = QComboBox()
         self.filenamechoice.setLineEdit( self.filename )
+        namelabel             = QLabel('Name:')
+        namelabel.setMaximumWidth(50)
         #self.filenamechoice.setAutoCompletion() #not working...
         #if self.defaultname != None: self.filenamechoice.addItem(self.defaultname) #'SWG_pygenerated.txt'
         self.filenamechoice.activated[str].connect(self.readSelectedFile)
         grid = QGridLayout()
         grid.addWidget( self.choosedirectory, 0,0)
         grid.addWidget( self.directorylabel , 0,1)
-        grid.addWidget( QLabel('Name:')     , 1,0, 1,1)
+        grid.addWidget( namelabel           , 1,0, 1,1)
         grid.addWidget( self.filenamechoice , 1,1, 1,4)
         # --- make connection --- #
         self.choosedirectory.clicked.connect( self.chooseNewDirectory )
