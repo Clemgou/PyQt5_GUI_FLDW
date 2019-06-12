@@ -60,7 +60,7 @@ class AblationWriting(QWidget):
         # --- make main window --- #
         self.splitter = QSplitter(PyQt5.QtCore.Qt.Horizontal)
         # --- PreviewCommandCode frame --- #
-        self.previewcode = PreviewCommandCode('Abl_pygenerated.txt')
+        self.previewcode = PreviewCommandCode()
         self.previewcode.filename.textChanged.connect(self.setNewFilename)
         self.previewcode.textedit.setMinimumWidth(0)
         self.previewcode.textedit.setMinimumHeight(400)

@@ -52,7 +52,6 @@ class PreviewCommandCode(QFrame):
         namelabel             = QLabel('Name:')
         namelabel.setMaximumWidth(50)
         #self.filenamechoice.setAutoCompletion() #not working...
-        #if self.defaultname != None: self.filenamechoice.addItem(self.defaultname) #'SWG_pygenerated.txt'
         self.filenamechoice.activated[str].connect(self.readSelectedFile)
         grid = QGridLayout()
         grid.addWidget( self.choosedirectory, 0,0)
@@ -71,7 +70,7 @@ class PreviewCommandCode(QFrame):
         self.textedit.setMinimumWidth(400)
         self.textedit.setMinimumHeight(600)
         self.textedit.setLineWrapMode( QTextEdit.NoWrap )
-        self.filename.setText( self.defaultname)
+        if self.defaultname != None: self.filename.setText( self.defaultname)
         #self.readSelectedFile()
         # --- make layout --- #
         self.layout = QVBoxLayout(self)

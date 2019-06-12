@@ -434,7 +434,7 @@ class DesignVisualisation(QFrame):
         # --- reset drawings --- #
         self.resetDrawingItems()
         # --- reset laser --- #
-        self.laser.__init__()
+        self.laser.__init__(log=self.log)
 
     def resetDrawingItems(self):
         '''

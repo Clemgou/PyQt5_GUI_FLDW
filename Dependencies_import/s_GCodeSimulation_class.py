@@ -43,7 +43,7 @@ class GCodeSimulation(QWidget):
         # --- make main window --- #
         self.splitter = QSplitter(PyQt5.QtCore.Qt.Horizontal)
         # --- PreviewCommandCode frame --- #
-        self.framePreviewcode = PreviewCommandCode('Abl_pygenerated.txt')
+        self.framePreviewcode = PreviewCommandCode()
         self.framePreviewcode.filename.textChanged.connect(self.setNewFilename)
         self.setNewFilename() # initialise filename
         # --- make frames --- #
