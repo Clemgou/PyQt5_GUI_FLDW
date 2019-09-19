@@ -20,7 +20,7 @@ from s_LASERSimulated_class   import LASERSimulated
 from s_LogDisplay_class       import LogDisplay
 
 import numpy     as np
-from   itertools import product
+from itertools import product
 from functools import partial
 
 ################################################################################################

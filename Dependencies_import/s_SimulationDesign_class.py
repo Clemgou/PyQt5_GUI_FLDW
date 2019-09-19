@@ -18,7 +18,6 @@ from pyqtgraph.opengl.GLGraphicsItem import GLGraphicsItem
 
 
 import numpy as np
-import time
 
 ################################################################################################
 # FUNCTION

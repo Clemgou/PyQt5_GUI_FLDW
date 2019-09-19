@@ -6,7 +6,6 @@
 ################################################################################################
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from s_MyPyQtObjects               import MyParameter
 from s_WriteCommandCode_functions  import *
@@ -30,7 +29,7 @@ class WriteCommandCode():
         self.initCommandMethodDictionary()
         #self.initDefault()
 
-    # --- Method attribution from external modul --- #
+    # --- Method attribution from external module --- #
     '''
     All the following method will return a string object. They all
     produce a part of the Gcode that will build the CoreText of thei

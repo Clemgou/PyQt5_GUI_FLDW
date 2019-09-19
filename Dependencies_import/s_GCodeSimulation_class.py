@@ -7,7 +7,7 @@
 
 import sys
 import PyQt5
-from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QWidget, QFrame, QTabWidget
+from PyQt5.QtWidgets import QWidget, QFrame, QTabWidget
 from PyQt5.QtWidgets import QBoxLayout,QGroupBox,QHBoxLayout,QVBoxLayout,QGridLayout,QSplitter
 from PyQt5.QtWidgets import QToolTip, QPushButton, QLabel, QLineEdit, QTextEdit,QCheckBox,QComboBox
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction

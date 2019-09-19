@@ -59,6 +59,8 @@ class LogDisplay(QFrame):
         newentry  = '\nNew entry at {}:'.format( time.toString(PyQt5.QtCore.Qt.ISODate) )
         self.displaytxt.append(newentry)
 
+    def showLog(self):
+        self.show()
 
 ################################################################################################
 # CODE
