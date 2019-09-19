@@ -27,7 +27,7 @@ from functools import partial
 # FUNCTIONS
 ################################################################################################
 
-class DesignVisualisation(QMainWindow):
+class DesignVisualisation(QFrame):
     def __init__(self, simuobjct=None, filename=None, errorbox=None, log=None):
         super().__init__()
         self.dicvariable    = {}
@@ -50,20 +50,14 @@ class DesignVisualisation(QMainWindow):
         self.whichsimu      = None
         self.progressbar    = QProgressBar()
         self.warningmesg    = QMessageBox()
-        self.centralwidget  = QFrame()
-        # --- main properties --- #
-        self.setDockNestingEnabled(True)
-        # ---  --- #
         self.initUI()
 
     def initUI(self):
-        # ---  central frame style --- #
-        self.centralwidget.setMinimumSize(400, 400)
-        self.centralwidget.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        self.centralwidget.setLineWidth(3)
-        self.centralwidget.setMidLineWidth(1)
-        self.setCentralWidget(self.centralwidget)
-        self.centralwidget.hide() # because QMainWindow must have a central widget, even if it is hidden and useless
+        # --- frame style --- #
+        self.setMinimumSize(400, 400)
+        self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        self.setLineWidth(3)
+        self.setMidLineWidth(1)
         # --- make LASER --- #
         self.laser = LASERSimulated(log=self.log)
         # --- make plot widget --- #
@@ -93,14 +87,6 @@ class DesignVisualisation(QMainWindow):
         self.axisorientation.addItem('Normal     (+X,+Y)')
         # --- make sliders for magnification and their layout --- #
         self.makeMagnitudeSliders()
-        # --- make the arrow displacement widget --- #
-        self.makePositionArrows()
-        # --- make progess bar --- #
-        self.makeProgressBarLayout()
-        # --- make central widget layout --- #
-        self.makeLaserPropertiesLayout()
-        self.makeSampleBoxLayout()
-        self.makePlotSimulationWidgetLayout()
         # --- make connections --- #
         self.simubutton.clicked.connect( self.makeSimulation )
         self.cleanviewbutton.clicked.connect( self.cleanSimulation )
@@ -108,14 +94,14 @@ class DesignVisualisation(QMainWindow):
         self.axisorientation.currentIndexChanged.connect( self.setOrientationAxis )
         self.currentcolor.currentIndexChanged.connect( self.setSimulationColor )
         self.resetbutton.clicked.connect( self.resetSimulation )
-        # --- parameters frame --- #
-        self.parameters_dockwindow = QDockWidget(self)
-        self.parameters_dockwindow.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetVerticalTitleBar)
-        frame_parameters = QFrame()
-        frame_parameters.setMaximumHeight( 150 )
-        frame_parameters.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        frame_parameters.setLineWidth(3)
-        frame_parameters.setMidLineWidth(1)
+        # --- make the arrow displacement widget --- #
+        self.makePositionArrows()
+        # --- make progess bar --- #
+        self.makeProgressBarLayout()
+        # --- make layout --- #
+        self.makeLaserPropertiesLayout()
+        self.makeSampleBoxLayout()
+        self.makePlotSimulationWidgetLayout()
         gridlayout  = QGridLayout()
         gridlayout.addWidget( QLabel('Fabrication:'), 0,0 , 1,2)
         gridlayout.addWidget( self.resetbutton      , 1,0 , 1,2 )
@@ -125,18 +111,11 @@ class DesignVisualisation(QMainWindow):
         hlayout_top.addLayout( gridlayout )
         hlayout_top.addLayout( self.sampleboxlayout )
         hlayout_top.addLayout( self.laserlayout )
+        # --- my method to avoid stretching of the top layout --- #
+        top_frame = QFrame()
+        top_frame.setLayout( hlayout_top )
+        top_frame.setMaximumHeight( 150 )
         # ---  --- #
-        frame_parameters.setLayout( hlayout_top )
-        self.parameters_dockwindow.setWidget(frame_parameters)
-        # --- navigation frame --- #
-        self.navigation_dockwindow = QDockWidget(self)
-        self.navigation_dockwindow.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetVerticalTitleBar)
-        frame_navigation = QFrame()
-        frame_navigation.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        frame_navigation.setLineWidth(3)
-        frame_navigation.setMidLineWidth(1)
-        frame_navigation.setMinimumWidth( 600 )
-        frame_navigation.setMaximumHeight( 150 )
         hlayout_bottom = QHBoxLayout()
         vlayout        = QVBoxLayout()
         vlayout.addWidget( self.sliderswidget )
@@ -144,22 +123,15 @@ class DesignVisualisation(QMainWindow):
         hlayout_bottom.addLayout( vlayout )
         hlayout_bottom.addWidget( self.arrowwidget )
         # ---  --- #
-        frame_navigation.setLayout( hlayout_bottom )
-        self.navigation_dockwindow.setWidget(frame_navigation)
-        # --- simulation plot frame --- #
-        self.plotwidget_dockwindow = QDockWidget(self)
-        self.plotwidget_dockwindow.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetVerticalTitleBar)
-        frame_plotwidget = QFrame()
-        frame_plotwidget.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        frame_plotwidget.setLineWidth(3)
-        frame_plotwidget.setMidLineWidth(1)
+        bottom_frame = QFrame()
+        bottom_frame.setLayout( hlayout_bottom )
+        bottom_frame.setMinimumWidth( 600 )
+        bottom_frame.setMaximumHeight( 150 )
         # ---  --- #
-        frame_plotwidget.setLayout( self.plotlayout )
-        self.plotwidget_dockwindow.setWidget(frame_plotwidget)
-        # --- set the dockwidgets --- #
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.parameters_dockwindow)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.plotwidget_dockwindow)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.navigation_dockwindow)
+        self.layout.addWidget( top_frame )
+        self.layout.addLayout(self.plotlayout)
+        self.layout.addWidget( bottom_frame )
+        self.setLayout(self.layout)
         # --- make default --- #
         self.setOrientationAxis( self.axisorientation.currentIndex() )
         self.setLASEROrigin()
@@ -391,8 +363,13 @@ class DesignVisualisation(QMainWindow):
         self.laser.progrssnbrmax.connect( self.setMaxProgressBar )
 
     def makePlotSimulationWidgetLayout(self):
+        # --- make the dockable window for the simulation plotwidget --- #
+        self.plotdockwindow = QDockWidget()
+        self.plotdockwindow.setWindowFlags(Qt.FramelessWindowHint)
+        self.plotdockwindow.setWidget( self.plotwidget )
+        # --- make the layout of the simulation plotwidget --- #
         self.plotlayout     = QVBoxLayout()
-        self.plotlayout.addWidget( self.plotwidget )
+        self.plotlayout.addWidget( self.plotdockwindow )
 
     def cameraGoNegativeY(self):
         X = np.array([0.,-1., 0.])
@@ -460,7 +437,7 @@ class DesignVisualisation(QMainWindow):
             self.log.addText("ERROR DICTIONARY OF ITEMS NOT RESET")
             self.log.addText(str(self.simuobjct.drawingitems))
         self.plotwidget = self.simuobjct.view
-        self.plotlayout.addWidget( self.plotwidget ) #self.plotwidget_dockwindow.setWidget( self.plotwidget ) #
+        self.plotdockwindow.setWidget( self.plotwidget ) #self.plotlayout.addWidget( self.plotwidget )
         self.axisorientation.setCurrentIndex(1)
         # --- reset drawings --- #
         self.resetDrawingItems()
@@ -482,7 +459,7 @@ class DesignVisualisation(QMainWindow):
         self.simuobjct.resetKeyItemDictionary('ITEMS')
 
     def cleanSimulation(self):
-        self.plotlayout.addWidget( self.plotwidget ) #self.plotwidget_dockwindow.setWidget( self.plotwidget ) #
+        self.plotdockwindow.setWidget( self.plotwidget ) #self.plotlayout.addWidget( self.plotwidget )
         self.simuobjct.cleanView()
 
     def clearAllPreviousDrawings(self):

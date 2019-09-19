@@ -7,7 +7,7 @@
 import sys
 sys.path.insert(0, './Dependencies_import')
 import PyQt5
-from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QWidget, QFrame, QTabWidget, QTableWidget
+from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QWidget, QFrame, QTabWidget, QTableWidget, QDockWidget
 from PyQt5.QtWidgets import QBoxLayout,QGroupBox,QHBoxLayout,QVBoxLayout,QGridLayout,QSplitter,QScrollArea
 from PyQt5.QtWidgets import QToolTip, QPushButton, QLabel, QLineEdit, QTextEdit, QCheckBox, QComboBox, QInputDialog
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction
@@ -67,7 +67,7 @@ class FLDWMainWindow(QMainWindow): # inherits from the QMainWindow class
         self.centraltab.tabCloseRequested.connect( self.closeTabe )
         self.setCentralWidget(self.centraltab)
         # --- make background of Main tab --- #
-        self.centralwidget.setStyleSheet("background-image: url(./"+self.importpath+self.iconpath+"Software_diagram.png);"+"background-repeat: no;"+"background-position: center;") 
+        self.centralwidget.setStyleSheet("background-image: url(./"+self.importpath+self.iconpath+"Software_diagram.png);"+"background-repeat: no;"+"background-position: center;")
         # --- Common Simulation object --- #
         self.simuobjct  = SimulationDesign()
         self.viewlayout = QHBoxLayout()

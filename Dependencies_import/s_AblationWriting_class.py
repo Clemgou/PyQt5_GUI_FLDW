@@ -95,8 +95,8 @@ class AblationWriting(QWidget):
         else:
             self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct) #QFrame()
         # ---  --- #
-        self.framePrevVisual.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        self.framePrevVisual.setMinimumSize(600, 600)
+        self.framePrevVisual.centralwidget.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        self.framePrevVisual.centralwidget.setMinimumSize(600, 600)
         self.simuobcj           = self.framePrevVisual.simuobjct
         self.viewobjct          = self.simuobcj.view
         # --- set default color --- #

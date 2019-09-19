@@ -64,8 +64,8 @@ class GCodeSimulation(QWidget):
         # ---  --- #
         self.framePrevVisual    = DesignVisualisation(simuobjct=self.extsimuobjct, log=self.log) #QFrame()
         # ---  --- #
-        self.framePrevVisual.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
-        self.framePrevVisual.setMinimumSize(600, 400)
+        self.framePrevVisual.centralwidget.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        self.framePrevVisual.centralwidget.setMinimumSize(600, 400)
         self.simuobcj           = self.framePrevVisual.simuobjct
         #self.simuobcj.initUI() # not necessary if the simuobjct is shared between different instances.
         self.viewobjct          = self.simuobcj.view
